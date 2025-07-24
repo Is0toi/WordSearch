@@ -1,0 +1,13 @@
+
+import javax.swing.JOptionPane;
+
+
+
+
+class WordSearch{
+    public static void main (String args[]) throws IOException{
+        Jframe frame = new JFrame()
+        JOptionPane.showMessageDialogue("Welcome to to Word Hunt Showdown! \n Before we get started, would you like to play single player or two player mode?");
+        JButton 
+    }
+}
