@@ -1,5 +1,5 @@
 public class Board{
-    private String[][] board = new String[15][15]
+    private String[][] board = new String[15][15];
 
     public Board(){
         for(int i = 0; i<15; i++){
@@ -37,7 +37,7 @@ public class Board{
     }
 
     public boolean tryToPlace(String word){
-        int randomizedDirection = (int) (Math.random()) * 3;
+        int randomizedDirection = (int) (Math.random() * 3);
         // Random number between 0-2: 0 horizontal, 1 vertical, 2 diagonal
 
         int randomRow = (int) (Math.random() * 15);
@@ -49,7 +49,18 @@ public class Board{
                 placeHorizontal(word,randomRow,randomColumn);
                 return true;
             }
+        } else if(randomizedDirection == 1){
+            if(tryVertical(word, randomRow, randomColumn)){
+                placeVertical(word,randomRow,randomColumn);
+                return true;
+            }
+        } else{
+            if(tryDiagonal(word,randomRow,randomColumn)){
+                placeDiagonal(word,randomRow,randomColumn);
+                return true;
+            }
         }
+        return false;
     }
 
 
@@ -59,9 +70,9 @@ public class Board{
             return false;
         }
         for(int i = 0; i < word.length(); i++){
-            char boardLetter = board[row][column+i];
+            String boardLetter = board[row][column+i];
 
-            if(boardLetter != '-' && boardLetter != word.charAt(i)){
+            if(!boardLetter.equals("-") && !boardLetter.equals(String.valueOf(word.charAt(i)))){
                 return false;
             }
         }
@@ -71,7 +82,7 @@ public class Board{
 
     public void placeHorizontal(String word, int row, int column){
         for (int i = 0; i < word.length(); i++){
-            board[row][column + i] = word.charAt(i);
+            board[row][column + i] = String.valueOf(word.charAt(i));
         }
     }
 
@@ -81,10 +92,10 @@ public class Board{
         if(row + word.length() > 15){
             return false;
         }
-        for(int i =0; i<word.length(); i++){
-            char boardLetter = board[row+i][column]; 
+        for(int i = 0; i < word.length(); i++){
+            String boardLetter = board[row+i][column]; 
 
-            if(boardLetter != '-' && boardLetter != word.charAt(i)){
+            if(!boardLetter.equals("-") && !boardLetter.equals(String.valueOf(word.charAt(i)))){
                 return false;
             }
         }
@@ -93,33 +104,30 @@ public class Board{
 
     public void placeVertical(String word, int row, int column){
         for(int i = 0; i < word.length(); i++){
-            board[row + i][column] = word.chartAt(i);
+            board[row + i][column] = String.valueOf(word.charAt(i));
         }
     }
 
     //------------------------------------------------
 
     public boolean tryDiagonal(String word, int row, int column){
-        if(row + word.length() > 15 || column + word.length > 15){
+        if(row + word.length() > 15 || column + word.length() > 15){
             return false;
         }
 
-        for(int i = 0; i<length; i++){
-            char current = board[row + i][column + i];
-            if(current != '-' && current != word.charAt(i)){
+        for(int i = 0; i < word.length(); i++){
+            String current = board[row + i][column + i];
+            if(!current.equals("-") && !current.equals(String.valueOf(word.charAt(i)))){
                 return false;
             }
         }
         return true;
     }
 
-    public voice placeDiagonal(String word, int row, int column){
+    public void placeDiagonal(String word, int row, int column){
         for(int i = 0; i < word.length(); i++){
-            board[row + i][column + i] = word.charAt(i);
+            board[row + i][column + i] = String.valueOf(word.charAt(i));
         }
     }
-
-
-
 
 }
