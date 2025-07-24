@@ -82,7 +82,12 @@ public class WordSearch{
             JOptionPane.showMessageDialog(null, "Thank you " + player1 + "! We'll get to work...", "Okay!", JOptionPane.INFORMATION_MESSAGE);
         
             JOptionPane.showMessageDialog(null,"Aaaaand we're back! " + player2 + ", are you ready to find the words with the theme: " + player1Theme +". Good luck!", "Okay!", JOptionPane.INFORMATION_MESSAGE);
-
+            
+            // Making board
+            Board board1 = new Board();
+            board1.makeWordSearch();
+            board1.fillRandomLetters();
+            
         }
 
 

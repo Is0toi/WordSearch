@@ -1,12 +1,25 @@
-public class Board{
+public class Board extends JFrame{
     private String[][] board = new String[15][15];
 
     public Board(){
-        for(int i = 0; i<15; i++){
-            for(int x = 0; x <15; x++){
-                board[x][i] = "-";
+        this.board = board;
+        setTitle("Word Search Board");
+        setSize(600,600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(15,15));
+
+        for(int r = 0; r< 15; r++){
+            for(int c = 0; c< 15; c++){
+                labels[r][c] = new JLabel(board[r][c], SwingConstants.CENTER);
+                labels[r][c].setBoarder(BoarderFactory.createLIneBoarder(Color.BLACK));
+                panel.add(labels[r][c]);
             }
         }
+        add(panel);
+        setVisibile(true);
+
     }
 
 
@@ -128,6 +141,25 @@ public class Board{
         for(int i = 0; i < word.length(); i++){
             board[row + i][column + i] = String.valueOf(word.charAt(i));
         }
+    }
+
+    //------------------------------------------------
+
+    public void fillRandomLetters(){
+        String newBoard[][] = new String [15][15];
+        for(int r = 0; r < 15; r++){
+            for(int c = 0; c < 15; c++){
+                String currentSpace = board[r][c];
+
+                if(currentSpace.equals("-")){
+                    char randomChar = (char) ('A' + (int)(Math.random() * 26));
+                    String randomLetter = String.valueOf(randomChar);
+                    newBoard[r][c] =  randomLetter;
+                }
+                
+        }
+        }
+        board = newBoard; //updates the board
     }
 
 }
