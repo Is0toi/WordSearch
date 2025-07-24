@@ -7,11 +7,10 @@ import java.util.Random;
 
 public class WordSearch{
     public static void main (String[] args){
-        // look at me doing good java practice
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300,200);
-        frame.setVisible(true);
+        // JFrame frame = new JFrame();
+        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // frame.setSize(300,200);
+        // frame.setVisible(true);
 
 
         // JOptionPane.showMessageDialog(null,"Welcome to to Word Hunt Showdown! \n Before we get started, would you like to play single player or two player mode?");
@@ -19,7 +18,7 @@ public class WordSearch{
         int choice = JOptionPane.showOptionDialog(null, "Welcome to to Word Hunt Showdown! \n Before we get started, would you like to play single player or two player mode?", "Welcome To WordSearch!", JOptionPane.DEFAULT_OPTION,
             JOptionPane.QUESTION_MESSAGE,null,new String[] {"1 Player", "2 Players"}, "1 Player");
 
-        if(choice == 1){
+        if(choice == 0){
             JOptionPane.showMessageDialog(null, "In single player, the program will generate a wordsaerch for you to solve. \n You will need to find 5 words with this distribution: \n -(2) 4 letter words \n -(3) 5 letter words \n Good luck!");
         }
         else{
@@ -29,12 +28,12 @@ public class WordSearch{
             "Player 2 earns 5 points for each theme word they find and 2 bonus points for discovering words valid on the grid. \n" +
             "One Player 2 uncovers all the words, or decides to give up, the roles switch!\n"+
             "At the end, the player with the most points wins the title of WORD HUNT CHAMPIONNNNNN" +
-            "Good luck and let the battle begin >:D");
+            " Good luck and let the battle begin >:D");
 
             String player1 = JOptionPane.showInputDialog(null, "Enter Player 1's name:");
             String player2 = JOptionPane.showInputDialog(null,"Enter Player 2's name:");
 
-            String player1Theme = JOptionPane.showInputDialog(null,"Okay" + player1 + ", are you ready? Enter a theme for you word search(Please be specific):");
+            String player1Theme = JOptionPane.showInputDialog(null,"Okay " + player1 + ", are you ready? Enter a theme for you word search (Please be specific):");
             JOptionPane.showMessageDialog(null, "Excellent choice! Now, enter 5 words (between 3-15 characters) you'd like for the program to scramble.", "Okay!", JOptionPane.INFORMATION_MESSAGE);
         
             String player1word1 = JOptionPane.showInputDialog(null, "Word 1:");
@@ -85,8 +84,9 @@ public class WordSearch{
             
             // Making board
             Board board1 = new Board();
-            board1.makeWordSearch();
+            board1.makeWordSearch(player1word1,player1word2,player1word3,player1word4,player1word5);
             board1.fillRandomLetters();
+            board1.setVisible(true);
             
         }
 

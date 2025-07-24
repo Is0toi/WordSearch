@@ -1,27 +1,42 @@
+import javax.swing.*;
+import java.awt.*;
+
 public class Board extends JFrame{
     private String[][] board = new String[15][15];
+    private JButton[][] button = new JButton[15][15];
 
     public Board(){
-        this.board = board;
-        setTitle("Word Search Board");
-        setSize(600,600);
+
+        setTitle("WordSearch Board");
+        setSize(800,800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        for (int r = 0; r < 15; r++) {
+            for (int c = 0; c < 15; c++) {
+                board[r][c] = "-";
+            }
+        }
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(15,15));
 
-        for(int r = 0; r< 15; r++){
-            for(int c = 0; c< 15; c++){
-                labels[r][c] = new JLabel(board[r][c], SwingConstants.CENTER);
-                labels[r][c].setBoarder(BoarderFactory.createLIneBoarder(Color.BLACK));
-                panel.add(labels[r][c]);
+        for(int r= 0; r < 15; r++){
+            for(int c = 0; c < 15; c++){
+                button[r][c] = new JButton(board[r][c]); //Buttons of the letters
+                panel.add(button[r][c]);
             }
         }
         add(panel);
-        setVisibile(true);
-
+        setVisible(true);
     }
 
+    public void refresh(){
+        // Refreshes the board after updates
+        for(int r = 0; r <15; r++){
+            for(int c = 0; c< 15; c++){
+                button[r][c].setText(board[r][c]);
+            }
+        }
+    }
 
     public void makeWordSearch(String word1, String word2, String word3, String word4, String word5){
         boolean placed1 = false;
@@ -157,9 +172,11 @@ public class Board extends JFrame{
                     newBoard[r][c] =  randomLetter;
                 }
                 
-        }
+            }
+            
         }
         board = newBoard; //updates the board
+        refresh();
     }
 
 }
