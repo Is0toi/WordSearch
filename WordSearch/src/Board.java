@@ -4,28 +4,38 @@ import java.awt.*;
 public class Board extends JFrame{
     private String[][] board = new String[15][15];
     private JButton[][] button = new JButton[15][15];
+    private JButton hintButton;
 
     public Board(){
-
         setTitle("WordSearch Board");
-        setSize(800,800);
+        setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
                 board[r][c] = "-";
             }
         }
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(15,15));
+        // Create hint button panel on the right side
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        hintButton = new JButton("Hint");
+        buttonPanel.add(hintButton);
+        add(buttonPanel, BorderLayout.EAST); 
 
-        for(int r= 0; r < 15; r++){
-            for(int c = 0; c < 15; c++){
-                button[r][c] = new JButton(board[r][c]); //Button of the letters
+        // Create grid panel for wordsearch
+        JPanel panel = new JPanel(new GridLayout(15, 15));
+        for (int r = 0; r < 15; r++) {
+            for (int c = 0; c < 15; c++) {
+                button[r][c] = new JButton(board[r][c]);
                 panel.add(button[r][c]);
             }
         }
-        add(panel);
+        add(panel, BorderLayout.CENTER);  
+
         setVisible(true);
     }
 
@@ -176,6 +186,9 @@ public class Board extends JFrame{
             
         }
         refresh();
+    }
+    public JButton getHintButton() {
+        return hintButton;
     }
 
 }

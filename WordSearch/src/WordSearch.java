@@ -91,31 +91,36 @@ public class WordSearch{
             // LOGIC ON BOARD ---------------------------------------------------------------------
 
             int numWordsLeft2 = 5; //Words needed to guess
-            int player2Points = 0;
             int player2numGuesses = 1;
-            int hintsUsedNum2 = 0;
+            final String player1word1_final = player1word1;
+            final String player1word2_final = player1word2;
+            final String player1word3_final = player1word3;
+            final String player1word4_final = player1word4;
+            final String player1word5_final = player1word5;
 
-            // HINT LOGIC   
-            // JOptionPane.showMessageDialog(null, "If you need a hint, click the hint button, but you will lose 3 points per hint and you only have 3 hints");
+            final int[] hintsUsedNum2 = {0};
+            final int[] player2Points = {0};
 
+            JButton hintButton = board1.getHintButton();
             hintButton.addActionListener(e -> {
-                if(hintsUsedNum2 < 3){
-                    hintsUsedNum2 += 1;
-                    JOptionPane.showMessageDialog(null,"Oops, maybe we made this too hard. Here, we'll give you the first letter of each word: \n" + hintSubstring(hintsUsedNum2, player1word1) +"\n" + hintSubstring(hintsUsedNum2, player1word2) + "\n "
-                    + hintSubstring(hintsUsedNum2, player1word3) +"\n " + hintSubstring(hintsUsedNum2, player1word4) +"\n"+ hintSubstring(hintsUsedNum2, player1word5));
-                    player2Points -=3;
-                }
-                else{
+                if (hintsUsedNum2[0] < 3) {
+                    hintsUsedNum2[0]++;
+                    JOptionPane.showMessageDialog(null,
+                        "Oops, maybe we made this too hard. Here, we'll give you the first letter of each word: \n" +
+                        hintSubstring(hintsUsedNum2[0], player1word1_final) + "\n" +
+                        hintSubstring(hintsUsedNum2[0], player1word2_final) + "\n" +
+                        hintSubstring(hintsUsedNum2[0], player1word3_final) + "\n" +
+                        hintSubstring(hintsUsedNum2[0], player1word4_final) + "\n" +
+                        hintSubstring(hintsUsedNum2[0], player1word5_final)
+                    );
+                    player2Points[0] -= 3;
+                } else {
                     JOptionPane.showMessageDialog(null, "You already used your hints. No more hints available :p");
                 }
             });
 
-          
-            
             
         }
-
-
 
 
     }
@@ -152,6 +157,9 @@ public class WordSearch{
              return false;
          }
     }
+    public static String hintSubstring(int numTimes, String word) {
+         return word.substring(0, numTimes);
+     }
 
     
 }
