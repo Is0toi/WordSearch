@@ -21,7 +21,7 @@ public class Board extends JFrame{
 
         for(int r= 0; r < 15; r++){
             for(int c = 0; c < 15; c++){
-                button[r][c] = new JButton(board[r][c]); //Buttons of the letters
+                button[r][c] = new JButton(board[r][c]); //Button of the letters
                 panel.add(button[r][c]);
             }
         }
@@ -53,13 +53,13 @@ public class Board extends JFrame{
                 placed2 = tryToPlace(word2);
             }
             if(!placed3){
-                placed2 = tryToPlace(word3);
+                placed3 = tryToPlace(word3);
             }
             if(!placed4){
-                placed2 = tryToPlace(word4);
+                placed4 = tryToPlace(word4);
             }
             if(!placed5){
-                placed2 = tryToPlace(word5);
+                placed5 = tryToPlace(word5);
             }
         }
     }
@@ -111,6 +111,7 @@ public class Board extends JFrame{
     public void placeHorizontal(String word, int row, int column){
         for (int i = 0; i < word.length(); i++){
             board[row][column + i] = String.valueOf(word.charAt(i));
+            button[row][column + i].setText(String.valueOf(word.charAt(i)));
         }
     }
 
@@ -133,6 +134,7 @@ public class Board extends JFrame{
     public void placeVertical(String word, int row, int column){
         for(int i = 0; i < word.length(); i++){
             board[row + i][column] = String.valueOf(word.charAt(i));
+            button[row +i][column].setText(String.valueOf(word.charAt(i)));
         }
     }
 
@@ -155,27 +157,24 @@ public class Board extends JFrame{
     public void placeDiagonal(String word, int row, int column){
         for(int i = 0; i < word.length(); i++){
             board[row + i][column + i] = String.valueOf(word.charAt(i));
+            button[row +i][column + i].setText(String.valueOf(word.charAt(i)));
         }
     }
 
     //------------------------------------------------
 
     public void fillRandomLetters(){
-        String newBoard[][] = new String [15][15];
         for(int r = 0; r < 15; r++){
             for(int c = 0; c < 15; c++){
-                String currentSpace = board[r][c];
-
-                if(currentSpace.equals("-")){
+                if(board[r][c].equals("-")){
                     char randomChar = (char) ('A' + (int)(Math.random() * 26));
-                    String randomLetter = String.valueOf(randomChar);
-                    newBoard[r][c] =  randomLetter;
+                    board[r][c] =String.valueOf(randomChar);
+                    button[r][c].setText(String.valueOf(randomChar));
                 }
                 
             }
             
         }
-        board = newBoard; //updates the board
         refresh();
     }
 

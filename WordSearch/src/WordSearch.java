@@ -33,7 +33,7 @@ public class WordSearch{
             String player1 = JOptionPane.showInputDialog(null, "Enter Player 1's name:");
             String player2 = JOptionPane.showInputDialog(null,"Enter Player 2's name:");
 
-            String player1Theme = JOptionPane.showInputDialog(null,"Okay " + player1 + ", are you ready? Enter a theme for you word search (Please be specific):");
+            String player1Theme = JOptionPane.showInputDialog(null,"Okay " + player1 + ", are you ready? Enter a theme for you word search (Please be specific and make sure player 2 doesn't see):");
             JOptionPane.showMessageDialog(null, "Excellent choice! Now, enter 5 words (between 3-15 characters) you'd like for the program to scramble.", "Okay!", JOptionPane.INFORMATION_MESSAGE);
         
             String player1word1 = JOptionPane.showInputDialog(null, "Word 1:");
@@ -78,7 +78,7 @@ public class WordSearch{
             
             player1word5 = player1word5.toUpperCase();
         
-            JOptionPane.showMessageDialog(null, "Thank you " + player1 + "! We'll get to work...", "Okay!", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Thank you " + player1 + "! We'll get to work! Turn the computer to " + player2, "Okay!", JOptionPane.INFORMATION_MESSAGE);
         
             JOptionPane.showMessageDialog(null,"Aaaaand we're back! " + player2 + ", are you ready to find the words with the theme: " + player1Theme +". Good luck!", "Okay!", JOptionPane.INFORMATION_MESSAGE);
             
