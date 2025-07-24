@@ -13,7 +13,7 @@ public class WordSearch{
         // frame.setVisible(true);
 
 
-        // JOptionPane.showMessageDialog(null,"Welcome to to Word Hunt Showdown! \n Before we get started, would you like to play single player or two player mode?");
+        // INTRODUCTION & WORD COLLECTION ------------------------------------------------------------
         String playerOptions[] = {"1 Player", "2 Players"};
         int choice = JOptionPane.showOptionDialog(null, "Welcome to to Word Hunt Showdown! \n Before we get started, would you like to play single player or two player mode?", "Welcome To WordSearch!", JOptionPane.DEFAULT_OPTION,
             JOptionPane.QUESTION_MESSAGE,null,new String[] {"1 Player", "2 Players"}, "1 Player");
@@ -82,11 +82,36 @@ public class WordSearch{
         
             JOptionPane.showMessageDialog(null,"Aaaaand we're back! " + player2 + ", are you ready to find the words with the theme: " + player1Theme +". Good luck!", "Okay!", JOptionPane.INFORMATION_MESSAGE);
             
-            // Making board
+            // BOARD --------------------------------------------------------------------------------
             Board board1 = new Board();
             board1.makeWordSearch(player1word1,player1word2,player1word3,player1word4,player1word5);
             board1.fillRandomLetters();
             board1.setVisible(true);
+
+            // LOGIC ON BOARD ---------------------------------------------------------------------
+
+            int numWordsLeft2 = 5; //Words needed to guess
+            int player2Points = 0;
+            int player2numGuesses = 1;
+            int hintsUsedNum2 = 0;
+
+            // HINT LOGIC   
+            // JOptionPane.showMessageDialog(null, "If you need a hint, click the hint button, but you will lose 3 points per hint and you only have 3 hints");
+
+            hintButton.addActionListener(e -> {
+                if(hintsUsedNum2 < 3){
+                    hintsUsedNum2 += 1;
+                    JOptionPane.showMessageDialog(null,"Oops, maybe we made this too hard. Here, we'll give you the first letter of each word: \n" + hintSubstring(hintsUsedNum2, player1word1) +"\n" + hintSubstring(hintsUsedNum2, player1word2) + "\n "
+                    + hintSubstring(hintsUsedNum2, player1word3) +"\n " + hintSubstring(hintsUsedNum2, player1word4) +"\n"+ hintSubstring(hintsUsedNum2, player1word5));
+                    player2Points -=3;
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "You already used your hints. No more hints available :p");
+                }
+            });
+
+          
+            
             
         }
 
@@ -127,4 +152,6 @@ public class WordSearch{
              return false;
          }
     }
+
+    
 }
