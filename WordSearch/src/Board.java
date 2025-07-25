@@ -6,7 +6,7 @@ import java.net.*;
 import java.util.*;
 import java.util.List;
 
-public class Board extends JFrame{
+public class Board extends JDialog{
     private String[][] board = new String[15][15];
     private JButton[][] button = new JButton[15][15];
     private JButton hintButton;
@@ -19,10 +19,10 @@ public class Board extends JFrame{
     private List<WordLocation> wordLocations = new ArrayList<>();
     private List<JButton> selectedButtons = new ArrayList<>();
 
-    public Board(String theme){
-        setTitle("WordSearch Board");
+    public Board(Frame owner, String theme){
+        super(owner, "WordSearch Board", true);
         setSize(800, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
 
@@ -46,6 +46,12 @@ public class Board extends JFrame{
         buttonPanel.add(hintButton);
         buttonPanel.add(submitButton);
         buttonPanel.add(quitButton);
+
+        hintButton.setFocusable(true);
+        submitButton.setFocusable(true);
+        hintButton.setEnabled(true);
+        submitButton.setEnabled(true);
+
         add(buttonPanel, BorderLayout.EAST); 
 
         for (int r = 0; r < 15; r++) {
@@ -68,9 +74,10 @@ public class Board extends JFrame{
 
         add(panel, BorderLayout.CENTER);
         defaultButtonColor = button[0][0].getBackground();
-        setVisible(true);
 
-        quitButton.addActionListener(e -> quitGame());
+        // submitButton.addActionListener(e -> checkSubmission());
+        quitButton.addActionListener(e -> dispose());
+        
     }
 
     public void makeWordSearch(String word1, String word2, String word3, String word4, String word5){
@@ -245,6 +252,8 @@ public class Board extends JFrame{
         String word = selectedWord.toString();
         String reverseWord = new StringBuilder(word).reverse().toString();
 
+        System.out.println("Submitted word: " + word);  
+
         if (isWordFound(word)){
             JOptionPane.showMessageDialog(this, "You already found this word!", "Word Already Found", JOptionPane.INFORMATION_MESSAGE);
             clearSelection();
@@ -263,31 +272,33 @@ public class Board extends JFrame{
     }
     public void toggleSelection(int r, int c) {
             Point p = new Point(r, c);
-            
+
             if (selectedCells.isEmpty()) {
                 selectedCells.add(p);
-                button[r][c].setBackground(Color.BLUE);
+                button[r][c].setBackground(Color.YELLOW);
             } else {
-                Point last = selectedCells.get(selectedCells.size() - 1);
-                int dr = r - last.x;
-                int dc = c - last.y;
-                
-                if ((Math.abs(dr) <= 1 && Math.abs(dc) <= 1) && 
-                    (dr == 0 || dc == 0 || Math.abs(dr) == Math.abs(dc))) {
-                    
-                    if (selectedCells.size() == 1 || 
-                        (r - last.x == last.x - selectedCells.get(selectedCells.size() - 2).x &&
-                        c - last.y == last.y - selectedCells.get(selectedCells.size() - 2).y)) {
-                        
-                        selectedCells.add(p);
-                        button[r][c].setBackground(Color.YELLOW);
-                    }
+                Point first = selectedCells.get(0);
+                int dr = r - first.x;
+                int dc = c - first.y;
+                int len = selectedCells.size();
+
+                // Normalize direction
+                int dirR = Integer.signum(dr);
+                int dirC = Integer.signum(dc);
+
+                // Expected next cell
+                Point expectedNext = new Point(first.x + dirR * len, first.y + dirC * len);
+
+                if (expectedNext.equals(p)) {
+                    selectedCells.add(p);
+                    button[r][c].setBackground(Color.YELLOW);
                 } else {
                     clearSelection();
                     selectedCells.add(p);
                     button[r][c].setBackground(Color.YELLOW);
                 }
             }
+
         }
 
         public void clearSelection() {
@@ -351,7 +362,7 @@ public class Board extends JFrame{
                 this, "Are you sure you want to quit?", "Confirm Quit", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 
                 if(response == JOptionPane.YES_OPTION){
-                    System.exit(0);
+                    dispose();
                 }
         }
 

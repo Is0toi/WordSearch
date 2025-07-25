@@ -16,7 +16,72 @@ public class WordSearch{
             JOptionPane.QUESTION_MESSAGE,null,new String[] {"1 Player", "2 Players"}, "1 Player");
 
         if(choice == 0){
-            JOptionPane.showMessageDialog(null, "In single player, the program will generate a wordsaerch for you to solve. \n You will need to find 5 words with this distribution: \n -(2) 4 letter words \n -(3) 5 letter words \n Good luck!");
+            String player = JOptionPane.showInputDialog(null, "Whats your name?:");
+            JOptionPane.showMessageDialog(null, "In single player, the program will generate a wordsaerch for you to solve. \n You will need to find 5 words with this distribution: \n -(2) 4 letter words \n -(3) 5 letter words \n "+
+            "If you use a hint that will deduct you 5 points but you are allowed 4 hints \n" +
+            "Well, Good luck!");
+
+
+        AtomicInteger numWordsLeft = new AtomicInteger(5);
+        AtomicInteger playerPoints = new AtomicInteger(0);
+        try {
+            final String fourLetter1 = generateWord("4-letter-words.txt", 417).toUpperCase();
+            final String fourLetter2 = generateWord("4-letter-words.txt", 417).toUpperCase();
+            final String fiveLetter1 = generateWord("5-letter-words.txt", 256).toUpperCase();
+            final String fiveLetter2 = generateWord("5-letter-words.txt", 256).toUpperCase();
+            final String fiveLetter3 = generateWord("5-letter-words.txt", 256).toUpperCase();
+
+            Board board = new Board(null, null);
+            board.makeWordSearch(fourLetter1, fourLetter2, fiveLetter1, fiveLetter2, fiveLetter3);
+            board.fillRandomLetters();
+            board.setVisible(true);
+
+           
+            AtomicInteger hintsUsedNum = new AtomicInteger(0);
+
+            board.getHintButton().addActionListener(e -> {
+                if (hintsUsedNum.get() < 4) {
+                    hintsUsedNum.incrementAndGet();
+                    playerPoints.addAndGet(-5);
+                    JOptionPane.showMessageDialog(null, 
+                        "Hint #" + hintsUsedNum.get() + ":\n" +
+                        hintSubstring(hintsUsedNum.get(), fourLetter1) + "\n" +
+                        hintSubstring(hintsUsedNum.get(), fourLetter2) + "\n" +
+                        hintSubstring(hintsUsedNum.get(), fiveLetter1) + "\n" +
+                        hintSubstring(hintsUsedNum.get(), fiveLetter2) + "\n" +
+                        hintSubstring(hintsUsedNum.get(), fiveLetter3) +
+                        "\n\nPoints deducted: 5");
+                } else {
+                    JOptionPane.showMessageDialog(null, "No more hints available! :p");
+                }
+            });
+
+            board.getSubmitButton().addActionListener(e -> {
+                if (board.checkSubmission()) {
+                    numWordsLeft.decrementAndGet(); 
+                    playerPoints.addAndGet(5);  
+                    JOptionPane.showMessageDialog(null, "Correct!!! +5 points. Words left: " + numWordsLeft.get());
+
+                    if (numWordsLeft.get() == 0) {
+                        JOptionPane.showMessageDialog(null, "Congrats! You have found all the words \n" + 
+                            "Final Score: " + playerPoints.get());
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Not a hidden word. Try again!");
+                }
+            });
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error loading word list files.");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+         JOptionPane.showMessageDialog(null, 
+            "Congrats " + player + "! Let's get the conclusion: \n" +
+            "You got " + playerPoints.get() + "! That's really impressive!");
+            
+
         }
         else{
             JOptionPane.showMessageDialog(null, "Get ready for a two-player competition! \n" + 
@@ -65,55 +130,14 @@ public class WordSearch{
                 }
             }
 
-            // JOptionPane.showMessageDialog(null, "Excellent choice! Now, enter 5 words (between 3-15 characters) you'd like for the program to scramble.", "Okay!", JOptionPane.INFORMATION_MESSAGE);
-
-            // String player1word1 = JOptionPane.showInputDialog(null, "Word 1:");
-
-            // while(isWord(player1word1) == false || player1word1.length() > 15 ||  player1word1.length() < 3){
-            //     player1word1 = JOptionPane.showInputDialog(null, "Please enter a valid word, less than 15 characters and greater than 3:");
-            // }
-
-            // String player1word2 = JOptionPane.showInputDialog(null, "Word 2:");
-
-            // while(isWord(player1word2) == false || player1word2.length() > 15 ||  player1word2.length() < 3){
-            //     player1word2 = JOptionPane.showInputDialog(null, "Please enter a valid word, less than 15 characters and greater than 3:");
-            // }
-
-            // String player1word3 = JOptionPane.showInputDialog(null, "Word 3:");
-
-            // while(isWord(player1word3) == false || player1word3.length() > 15 ||  player1word3.length() < 3){
-            //     player1word3 = JOptionPane.showInputDialog(null, "Please enter a valid word, less than 15 characters and greater than 3:");
-            // }
-
-            // String player1word4 = JOptionPane.showInputDialog(null, "Word 4:");
-
-            // while(isWord(player1word4) == false || player1word4.length() > 15 ||  player1word4.length() < 3){
-            //     player1word4 = JOptionPane.showInputDialog(null, "Please enter a valid word, less than 15 characters and greater than 3:");
-            // }
-
-            // String player1word5 = JOptionPane.showInputDialog(null, "Word 5:");
-
-            // while(isWord(player1word5) == false || player1word5.length() > 15 ||  player1word5.length() < 3){
-            //     player1word5 = JOptionPane.showInputDialog(null, "Please enter a valid word, less than 15 characters and greater than 3:");
-            // }
-
-
-            // JOptionPane.showMessageDialog(null, "Thank you " + player1 + "! We'll get to work! Turn the computer to " + player2, "Okay!", JOptionPane.INFORMATION_MESSAGE);
-
-            // JOptionPane.showMessageDialog(null,"Aaaaand we're back! " + player2 + ", are you ready to find the words with the theme: " + player1Theme +". Good luck!", "Okay!", JOptionPane.INFORMATION_MESSAGE);
-
-            // BOARD --------------------------------------------------------------------------------
-            Board board1 = new Board(player1Theme);
+    
+            // BOARD -----------------------------------------------------------------------------------------
+            Board board1 = new Board(null, player1Theme);
             board1.makeWordSearch(words[0],words[1],words[2],words[3],words[4]);
             board1.fillRandomLetters();
             board1.setVisible(true);
 
             // LOGIC ON BOARD ---------------------------------------------------------------------
-
-            // int numWordsLeft = 5;
-            // int player2Points = 0;
-            // int hintsUsedNum2 = 0;
-            //Somehow lambda likes this better I've never encountered this situation
 
             AtomicInteger numWordsLeft = new AtomicInteger(5);
             AtomicInteger player2Points = new AtomicInteger(0);
@@ -197,10 +221,10 @@ public class WordSearch{
             }
 
             // BOARD --------------------------------------------------------------------------------
-            Board board2 = new Board(player2Theme);
-            board1.makeWordSearch(words2[0],words2[1],words2[2],words2[3],words2[4]);
-            board1.fillRandomLetters();
-            board1.setVisible(true);
+            Board board2 = new Board(null, player2Theme);
+            board2.makeWordSearch(words2[0],words2[1],words2[2],words2[3],words2[4]);
+            board2.fillRandomLetters();
+            board2.setVisible(true);
 
             // LOGIC ON BOARD ---------------------------------------------------------------------
 
@@ -209,7 +233,7 @@ public class WordSearch{
             AtomicInteger hintsUsedNum1 = new AtomicInteger(0);
 
             // JButton hintButton = board1.getHintButton();
-            board1.getHintButton().addActionListener(e -> {
+            board2.getHintButton().addActionListener(e -> {
             if (hintsUsedNum1.get() < 3) {
                 hintsUsedNum1.incrementAndGet();
                 player1Points.addAndGet(-3);
@@ -226,9 +250,9 @@ public class WordSearch{
             }
         });
 
-            board1.getSubmitButton().addActionListener(e -> {
+            board2.getSubmitButton().addActionListener(e -> {
              //Some atmoicInteger ngl I used chatgpt because I have never experienced this before
-            if (board1.checkSubmission()) {
+            if (board2.checkSubmission()) {
                 numWordsLeft2.decrementAndGet(); 
                 player1Points.addAndGet(5);  
                 JOptionPane.showMessageDialog(null, "Correct!!! +5 points. Words left: " + numWordsLeft2.get());
@@ -294,6 +318,28 @@ public class WordSearch{
     }
     public static String hintSubstring(int numTimes, String word) {
          return word.substring(0, numTimes);
+    }
+
+    public static String generateWord(String fileName, int numLines) throws IOException{
+        int currentLine = 1;
+        String randomWord = null;
+        
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+
+        int randomLine = (int) (Math.random() * numLines) + 1;
+
+        String line;
+
+        // read random line
+        while((line = reader.readLine()) != null){
+            if(currentLine == randomLine){
+                randomWord = line.trim(); // So that the word doesn't have any excess space
+                break;
+            }
+            currentLine++;
+        }
+        reader.close();
+        return randomWord;
     }
 
 
