@@ -1,10 +1,31 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.List;
 
 public class Board extends JFrame{
     private String[][] board = new String[15][15];
     private JButton[][] button = new JButton[15][15];
     private JButton hintButton;
+    private JButton submitButton;
+    private List<Point> selectedCells = new ArrayList<>();
+    private Color defaultButtonColor;
+    private List<String> foundWords = new ArrayList<>();
+    private List<String> hiddenWords = new ArrayList<>();
+    private List<WordLocation> wordLocations = new ArrayList<>();
+
+    public class WordLocation{
+        String word;
+        List<Point> locations;
+
+        public WordLocation(String word, List<Point> locations){
+            this.word = word;
+            this.locations = locations;
+        }
+    }
 
     public Board(){
 
@@ -23,20 +44,36 @@ public class Board extends JFrame{
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(15,15));
-        // Create hint button panel on the right side
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         hintButton = new JButton("Hint");
+        submitButton = new JButton("Submit");
         buttonPanel.add(hintButton);
+        buttonPanel.add(submitButton);
         add(buttonPanel, BorderLayout.EAST); 
 
         for(int r= 0; r < 15; r++){
             for(int c = 0; c < 15; c++){
                 button[r][c] = new JButton(board[r][c]); //Button of the letters
+                panel.add(button[r][c]);
+                final int row = r;
+                final int col = c;
+                button[r][c].addActionListener(e ->{
+                    if(!button[row][col].getBackground().equals(Color.BLUE)){
+                        toggleSelection(row,col);
+                    }
+                });
             }
+            add(panel, BorderLayout.CENTER);
+
+            defaultButtonColor = button[0][0].getBackground();
+            setVisible(true);
         }
+
+        
         // Create grid panel for wordsearch
-        JPanel panel = new JPanel(new GridLayout(15, 15));
+    
 
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
@@ -48,15 +85,6 @@ public class Board extends JFrame{
         add(panel, BorderLayout.CENTER);  
 
         setVisible(true);
-    }
-
-    public void refresh(){
-        // Refreshes the board after updates
-        for(int r = 0; r <15; r++){
-            for(int c = 0; c< 15; c++){
-                button[r][c].setText(board[r][c]);
-            }
-        }
     }
 
     public void makeWordSearch(String word1, String word2, String word3, String word4, String word5){
@@ -113,7 +141,8 @@ public class Board extends JFrame{
     }
 
 
-    //------------------------------------------------
+    // PLACE WORD LOGIC------------------------------------------------
+
     public boolean tryHorizontal(String word, int row, int column){
         if(column + word.length() > 15){
             return false;
@@ -135,7 +164,6 @@ public class Board extends JFrame{
             button[row][column + i].setText(String.valueOf(word.charAt(i)));
         }
     }
-
 
     //------------------------------------------------
     public boolean tryVertical(String word, int row, int column){
@@ -198,8 +226,103 @@ public class Board extends JFrame{
         }
         refresh();
     }
+    //------------------------------------------------
     public JButton getHintButton() {
         return hintButton;
     }
+    public JButton getSubmitButton(){
+        return submitButton;
+    }
+    
+    public boolean checkSubmission(){
+        //Checks if word is correct
+        if(selectedCells.isEmpty()){
+            return false;
+        }
+
+        StringBuilder selectedWord = new StringBuilder();
+        for(Point p: selectedCells){
+            selectedWord.append(button[p.x][p.y].getText());
+        }
+        String word = selectedWord.toString();
+        String reverseWord = new StringBuilder(word).reverse().toString();
+
+        for(String hidden: hiddenWords){
+            if(!isWordFound(hidden)&& (word.equals(hidden) || reverseWord.equals(hidden))){
+                foundWords.add(hidden);
+                highlightFoundWord(hidden);
+                clearSelection();
+                return true;
+            }
+        }
+        clearSelection();
+        return false;
+    }
+    public void toggleSelection(int r, int c) {
+            //This makes it so people don't go out of order like picking rows only, picking columns only, or picking diagonal (I followed a tutorial)
+            Point p = new Point(r, c);
+            
+            if (selectedCells.isEmpty()) {
+                selectedCells.add(p);
+                button[r][c].setBackground(Color.YELLOW);
+            } else {
+                Point last = selectedCells.get(selectedCells.size() - 1);
+                int dr = r - last.x;
+                int dc = c - last.y;
+                
+                if ((Math.abs(dr) <= 1 && Math.abs(dc) <= 1) && 
+                    (dr == 0 || dc == 0 || Math.abs(dr) == Math.abs(dc))) {
+                    
+                    if (selectedCells.size() == 1 || 
+                        (r - last.x == last.x - selectedCells.get(selectedCells.size() - 2).x &&
+                        c - last.y == last.y - selectedCells.get(selectedCells.size() - 2).y)) {
+                        
+                        selectedCells.add(p);
+                        button[r][c].setBackground(Color.YELLOW);
+                    }
+                } else {
+                    clearSelection();
+                    selectedCells.add(p);
+                    button[r][c].setBackground(Color.YELLOW);
+                }
+            }
+        }
+
+        public void clearSelection(){
+            //resets visual apperance
+            for(Point p : selectedCells){
+                button[p.x][p.y].setBackground(defaultButtonColor);
+            }
+            selectedCells.clear();
+        }
+
+        public void refresh(){
+            for(int r = 0; r < 15; r++){
+                for(int c = 0; c < 15; c++){
+                    button[r][c].setText(board[r][c]);
+                }
+            }
+        }
+
+        private boolean isWordFound(String word) {
+            for (String found : foundWords) {
+                if (found.equals(word)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void highlightFoundWord(String word) {
+            for (WordLocation wl : wordLocations) {
+                if (wl.word.equals(word)) {
+                    for (Point p : wl.locations) {
+                        button[p.x][p.y].setBackground(Color.GREEN);
+                    }
+                    break;
+                }
+            }
+        }
+        
 
 }
