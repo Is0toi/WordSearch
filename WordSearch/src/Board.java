@@ -28,13 +28,10 @@ public class Board extends JFrame{
     }
 
     public Board(){
-
         setTitle("WordSearch Board");
-        setSize(800,800);
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
 
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
@@ -43,7 +40,7 @@ public class Board extends JFrame{
         }
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(15,15));
+        panel.setLayout(new GridLayout(15, 15));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
@@ -53,37 +50,22 @@ public class Board extends JFrame{
         buttonPanel.add(submitButton);
         add(buttonPanel, BorderLayout.EAST); 
 
-        for(int r= 0; r < 15; r++){
-            for(int c = 0; c < 15; c++){
-                button[r][c] = new JButton(board[r][c]); //Button of the letters
-                panel.add(button[r][c]);
-                final int row = r;
-                final int col = c;
-                button[r][c].addActionListener(e ->{
-                    if(!button[row][col].getBackground().equals(Color.BLUE)){
-                        toggleSelection(row,col);
-                    }
-                });
-            }
-            add(panel, BorderLayout.CENTER);
-
-            defaultButtonColor = button[0][0].getBackground();
-            setVisible(true);
-        }
-
-        
-        // Create grid panel for wordsearch
-    
-
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
                 button[r][c] = new JButton(board[r][c]);
                 panel.add(button[r][c]);
+                final int row = r;
+                final int col = c;
+                button[r][c].addActionListener(e -> {
+                    if (!button[row][col].getBackground().equals(Color.BLUE)) {
+                        toggleSelection(row, col);
+                    }
+                });
             }
         }
-        add(panel);
-        add(panel, BorderLayout.CENTER);  
 
+        add(panel, BorderLayout.CENTER);
+        defaultButtonColor = button[0][0].getBackground();
         setVisible(true);
     }
 
@@ -158,11 +140,15 @@ public class Board extends JFrame{
     }
 
 
-    public void placeHorizontal(String word, int row, int column){
-        for (int i = 0; i < word.length(); i++){
+    public void placeHorizontal(String word, int row, int column) {
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < word.length(); i++) {
             board[row][column + i] = String.valueOf(word.charAt(i));
             button[row][column + i].setText(String.valueOf(word.charAt(i)));
+            points.add(new Point(row, column + i));
         }
+        hiddenWords.add(word);
+        wordLocations.add(new WordLocation(word, points));
     }
 
     //------------------------------------------------
@@ -180,11 +166,15 @@ public class Board extends JFrame{
         return true;
     }
 
-    public void placeVertical(String word, int row, int column){
-        for(int i = 0; i < word.length(); i++){
+    public void placeVertical(String word, int row, int column) {
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < word.length(); i++) {
             board[row + i][column] = String.valueOf(word.charAt(i));
-            button[row +i][column].setText(String.valueOf(word.charAt(i)));
+            button[row + i][column].setText(String.valueOf(word.charAt(i)));
+            points.add(new Point(row + i, column));
         }
+        hiddenWords.add(word);
+        wordLocations.add(new WordLocation(word, points));
     }
 
     //------------------------------------------------
@@ -203,11 +193,15 @@ public class Board extends JFrame{
         return true;
     }
 
-    public void placeDiagonal(String word, int row, int column){
-        for(int i = 0; i < word.length(); i++){
+    public void placeDiagonal(String word, int row, int column) {
+        List<Point> points = new ArrayList<>();
+        for (int i = 0; i < word.length(); i++) {
             board[row + i][column + i] = String.valueOf(word.charAt(i));
-            button[row +i][column + i].setText(String.valueOf(word.charAt(i)));
+            button[row + i][column + i].setText(String.valueOf(word.charAt(i)));
+            points.add(new Point(row + i, column + i));
         }
+        hiddenWords.add(word);
+        wordLocations.add(new WordLocation(word, points));
     }
 
     //------------------------------------------------
@@ -259,7 +253,6 @@ public class Board extends JFrame{
         return false;
     }
     public void toggleSelection(int r, int c) {
-            //This makes it so people don't go out of order like picking rows only, picking columns only, or picking diagonal (I followed a tutorial)
             Point p = new Point(r, c);
             
             if (selectedCells.isEmpty()) {
@@ -288,9 +281,8 @@ public class Board extends JFrame{
             }
         }
 
-        public void clearSelection(){
-            //resets visual apperance
-            for(Point p : selectedCells){
+        public void clearSelection() {
+            for (Point p : selectedCells) {
                 button[p.x][p.y].setBackground(defaultButtonColor);
             }
             selectedCells.clear();
@@ -324,5 +316,4 @@ public class Board extends JFrame{
             }
         }
         
-
 }
