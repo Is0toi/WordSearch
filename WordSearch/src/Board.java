@@ -1,10 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Board extends JFrame{
     private String[][] board = new String[15][15];
     private JButton[][] button = new JButton[15][15];
     private JButton hintButton;
+    private JButton submitButton;
+    private List<JButton> selectedButtons = new ArrayList<>();
+
 
     public Board(){
         setTitle("WordSearch Board");
@@ -24,14 +29,31 @@ public class Board extends JFrame{
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         hintButton = new JButton("Hint");
         buttonPanel.add(hintButton);
+
+        submitButton = new JButton("Submit Word");
+        buttonPanel.add(submitButton);  
         add(buttonPanel, BorderLayout.EAST); 
+        //how to make it near the hint button
 
         // Create grid panel for wordsearch
         JPanel panel = new JPanel(new GridLayout(15, 15));
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
-                button[r][c] = new JButton(board[r][c]);
-                panel.add(button[r][c]);
+                JButton b = new JButton(board[r][c]);
+                button[r][c] = b;
+                int finalR = r;
+                int finalC = c;
+                b.addActionListener(e->{
+                    if(!selectedButtons.contains(b)){
+                        selectedButtons.add(b);
+                        b.setBackground(Color.BLUE);
+                    }
+                    else{
+                        selectedButtons.remove(b);
+                        b.setBackground(null);
+                    }
+                });
+                panel.add(b);
             }
         }
         add(panel, BorderLayout.CENTER);  
@@ -190,5 +212,24 @@ public class Board extends JFrame{
     public JButton getHintButton() {
         return hintButton;
     }
+
+    public String getSelectedWord(){
+        StringBuilder sb = new StringBuilder();
+        for(JButton b : selectedButtons){
+            sb.append(b.getText());
+        }
+        return sb.toString();
+    }
+    public void clearSelection() {
+        for(JButton b : selectedButtons){
+            b.setBackground(null);
+        }
+        selectedButtons.clear();
+    }
+
+    public JButton getSubmitButton(){
+        return submitButton;
+    }
+
 
 }

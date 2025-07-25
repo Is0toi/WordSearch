@@ -4,8 +4,12 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class WordSearch{
+    
     public static void main (String[] args){
         // JFrame frame = new JFrame();
         // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -88,42 +92,69 @@ public class WordSearch{
             board1.fillRandomLetters();
             board1.setVisible(true);
 
-            // LOGIC ON BOARD ---------------------------------------------------------------------
+            // HINT BUTTON --------------------------------------------------------------------- 
 
-            int numWordsLeft2 = 5; //Words needed to guess
-            int player2numGuesses = 1;
-            final String player1word1_final = player1word1;
-            final String player1word2_final = player1word2;
-            final String player1word3_final = player1word3;
-            final String player1word4_final = player1word4;
-            final String player1word5_final = player1word5;
-
+            final String[] guessedWords = new String[5];
+            final int[] numGuessedCorrectly = {0};
+            final int[] numWordsLeft2Wrapper = {5};
             final int[] hintsUsedNum2 = {0};
             final int[] player2Points = {0};
+            final String finalPlayer1word1 = player1word1;
+            final String finalPlayer1word2 = player1word2;
+            final String finalPlayer1word3 = player1word3;
+            final String finalPlayer1word4 = player1word4;
+            final String finalPlayer1word5 = player1word5;
+            
 
             JButton hintButton = board1.getHintButton();
-            hintButton.addActionListener(e -> {
-                if (hintsUsedNum2[0] < 3) {
-                    hintsUsedNum2[0]++;
-                    JOptionPane.showMessageDialog(null,
-                        "Oops, maybe we made this too hard. Here, we'll give you the first letter of each word: \n" +
-                        hintSubstring(hintsUsedNum2[0], player1word1_final) + "\n" +
-                        hintSubstring(hintsUsedNum2[0], player1word2_final) + "\n" +
-                        hintSubstring(hintsUsedNum2[0], player1word3_final) + "\n" +
-                        hintSubstring(hintsUsedNum2[0], player1word4_final) + "\n" +
-                        hintSubstring(hintsUsedNum2[0], player1word5_final)
-                    );
-                    player2Points[0] -= 3;
+            JButton submitButton = board1.getSubmitButton();
+            // board1.add(submitButton, BorderLayout.SOUTH);
+
+            submitButton.addActionListener(e -> {
+                String guess = board1.getSelectedWord().toUpperCase();
+
+                if (guess.equals(guessedWords[0]) || guess.equals(guessedWords[1]) ||
+                    guess.equals(guessedWords[2]) || guess.equals(guessedWords[3]) ||
+                    guess.equals(guessedWords[4])) {
+
+                    JOptionPane.showMessageDialog(null, "You've already guessed this word!");
+
+                } else if (guess.equals(finalPlayer1word1) || guess.equals(finalPlayer1word2) ||
+                        guess.equals(finalPlayer1word3) || guess.equals(finalPlayer1word4) ||
+                        guess.equals(finalPlayer1word5)) {
+
+                    board1.clearSelection();
+                    guessedWords[numGuessedCorrectly[0]] = guess;
+                    numGuessedCorrectly[0]++;
+                    player2Points[0] += 5;
+                    numWordsLeft2Wrapper[0]--;
+
+                    JOptionPane.showMessageDialog(null, "Correct! " + numWordsLeft2Wrapper[0] + " words left.");
+
+                } else if (isWord(guess)) {
+                    board1.clearSelection();
+                    player2Points[0] += 2;
+                    JOptionPane.showMessageDialog(null, "That word wasn't in the list, but it's a real word! +2 points.");
+
                 } else {
-                    JOptionPane.showMessageDialog(null, "You already used your hints. No more hints available :p");
+                    JOptionPane.showMessageDialog(null, "That's not even a real word!");
+                }
+
+                if (numWordsLeft2Wrapper[0] == 0) {
+                    JOptionPane.showMessageDialog(null, "CONGRATSSS, " + player2 + "! You've found all the words!");
+                    JOptionPane.showMessageDialog(null, "Final Score: " + player2Points[0] + " points!");
                 }
             });
 
+
+            //PLAYER 2 MAKES WORDSEARCH FOR PLAYER 1 TO FIND WORDS ----------------------------------------------------------------- Hoepfuly this works
+
             
-        }
+    }
 
 
     }
+    
 
 
 
@@ -156,10 +187,12 @@ public class WordSearch{
          } catch (IOException e) {
              return false;
          }
+        
     }
     public static String hintSubstring(int numTimes, String word) {
          return word.substring(0, numTimes);
-     }
+    }
+}
 
     
-}
+
