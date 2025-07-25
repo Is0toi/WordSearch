@@ -1,12 +1,9 @@
-import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.*;
-import java.util.Random;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.swing.*;
 
 public class WordSearch{
     public static void main (String[] args){
@@ -31,45 +28,49 @@ public class WordSearch{
             final String fiveLetter2 = generateWord("5-letter-words.txt", 256).toUpperCase();
             final String fiveLetter3 = generateWord("5-letter-words.txt", 256).toUpperCase();
 
-            Board board = new Board(null, null);
+            Board board = new Board(null, "Single Player!");
             board.makeWordSearch(fourLetter1, fourLetter2, fiveLetter1, fiveLetter2, fiveLetter3);
             board.fillRandomLetters();
-            board.setVisible(true);
+            // board.setVisible(true);
 
            
             AtomicInteger hintsUsedNum = new AtomicInteger(0);
 
             board.getHintButton().addActionListener(e -> {
-                if (hintsUsedNum.get() < 4) {
-                    hintsUsedNum.incrementAndGet();
-                    playerPoints.addAndGet(-5);
-                    JOptionPane.showMessageDialog(null, 
-                        "Hint #" + hintsUsedNum.get() + ":\n" +
-                        hintSubstring(hintsUsedNum.get(), fourLetter1) + "\n" +
-                        hintSubstring(hintsUsedNum.get(), fourLetter2) + "\n" +
-                        hintSubstring(hintsUsedNum.get(), fiveLetter1) + "\n" +
-                        hintSubstring(hintsUsedNum.get(), fiveLetter2) + "\n" +
-                        hintSubstring(hintsUsedNum.get(), fiveLetter3) +
-                        "\n\nPoints deducted: 5");
-                } else {
-                    JOptionPane.showMessageDialog(null, "No more hints available! :p");
-                }
-            });
+            if (hintsUsedNum.get() < 4) {
+                hintsUsedNum.incrementAndGet();
+                playerPoints.addAndGet(-5);
+                String hints = (
+                    "Hint #" + hintsUsedNum.get() + ":\n" +
+                    hintSubstring(hintsUsedNum.get(), fourLetter1) + "\n" +
+                    hintSubstring(hintsUsedNum.get(), fourLetter2) + "\n" +
+                    hintSubstring(hintsUsedNum.get(), fiveLetter1) + "\n" +
+                    hintSubstring(hintsUsedNum.get(), fiveLetter2) + "\n" +
+                    hintSubstring(hintsUsedNum.get(), fiveLetter3) +
+                    "\n\nPoints deducted: 5");
+                    board.setMessage(hints);
+            } else{
+                board.setMessage("No more hints available! :p now you're too greedy and don't get hints");
+            }
+           
+        });
 
             board.getSubmitButton().addActionListener(e -> {
                 if (board.checkSubmission()) {
                     numWordsLeft.decrementAndGet(); 
                     playerPoints.addAndGet(5);  
-                    JOptionPane.showMessageDialog(null, "Correct!!! +5 points. Words left: " + numWordsLeft.get());
+                    board.setMessage("Correct!!! +5 points. Words left: " + numWordsLeft.get());
 
                     if (numWordsLeft.get() == 0) {
-                        JOptionPane.showMessageDialog(null, "Congrats! You have found all the words \n" + 
+                        board.setMessage("Congrats! You have found all the words \n" + 
                             "Final Score: " + playerPoints.get());
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Not a hidden word. Try again!");
+                    board.setMessage( "Not a hidden word. Try again!");
                 }
             });
+
+            board.setVisible(true);
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error loading word list files.");
@@ -135,7 +136,7 @@ public class WordSearch{
             Board board1 = new Board(null, player1Theme);
             board1.makeWordSearch(words[0],words[1],words[2],words[3],words[4]);
             board1.fillRandomLetters();
-            board1.setVisible(true);
+            
 
             // LOGIC ON BOARD ---------------------------------------------------------------------
 
@@ -143,12 +144,12 @@ public class WordSearch{
             AtomicInteger player2Points = new AtomicInteger(0);
             AtomicInteger hintsUsedNum2 = new AtomicInteger(0);
 
-            // JButton hintButton = board1.getHintButton();
             board1.getHintButton().addActionListener(e -> {
             if (hintsUsedNum2.get() < 3) {
+                System.out.println("Hint button: " + board1.getHintButton());
                 hintsUsedNum2.incrementAndGet();
                 player2Points.addAndGet(-3);
-                JOptionPane.showMessageDialog(null, 
+                String hints = (
                     "Hint #" + hintsUsedNum2.get() + ":\n" +
                     hintSubstring(hintsUsedNum2.get(), words[0]) + "\n" +
                     hintSubstring(hintsUsedNum2.get(), words[1]) + "\n" +
@@ -156,8 +157,9 @@ public class WordSearch{
                     hintSubstring(hintsUsedNum2.get(), words[3]) + "\n" +
                     hintSubstring(hintsUsedNum2.get(), words[4]) +
                     "\n\nPoints deducted: 3");
+                board1.setMessage(hints);
             } else {
-                JOptionPane.showMessageDialog(null, "No more hints available! :p");
+                board1.setMessage("No more hints available! :p");
             }
         });
 
@@ -166,16 +168,17 @@ public class WordSearch{
             if (board1.checkSubmission()) {
                 numWordsLeft.decrementAndGet(); 
                 player2Points.addAndGet(5);  
-                JOptionPane.showMessageDialog(null, "Correct!!! +5 points. Words left: " + numWordsLeft.get());
+                board1.setMessage("Correct!!! +5 points. Words left: " + numWordsLeft.get());
 
                 if (numWordsLeft.get() == 0) {
-                    JOptionPane.showMessageDialog(null, "Congrats! You have found all the words \n" + 
+                    board1.setMessage( "Congrats! You have found all the words \n" + 
                         "Final Score: " + player2Points.get());
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Not a hidden word. Try again!");
+                board1.setMessage("Not a hidden word. Try again!");
             }
         });
+        board1.setVisible(true);
         
 
 
@@ -224,7 +227,6 @@ public class WordSearch{
             Board board2 = new Board(null, player2Theme);
             board2.makeWordSearch(words2[0],words2[1],words2[2],words2[3],words2[4]);
             board2.fillRandomLetters();
-            board2.setVisible(true);
 
             // LOGIC ON BOARD ---------------------------------------------------------------------
 
@@ -237,7 +239,7 @@ public class WordSearch{
             if (hintsUsedNum1.get() < 3) {
                 hintsUsedNum1.incrementAndGet();
                 player1Points.addAndGet(-3);
-                JOptionPane.showMessageDialog(null, 
+                String hints = (
                     "Hint #" + hintsUsedNum1.get() + ":\n" +
                     hintSubstring(hintsUsedNum1.get(), words2[0]) + "\n" +
                     hintSubstring(hintsUsedNum1.get(), words2[1]) + "\n" +
@@ -245,8 +247,9 @@ public class WordSearch{
                     hintSubstring(hintsUsedNum1.get(), words2[3]) + "\n" +
                     hintSubstring(hintsUsedNum1.get(), words2[4]) +
                     "\n\nPoints deducted: 3");
+                    board1.setMessage(hints);
             } else {
-                JOptionPane.showMessageDialog(null, "No more hints available! :p");
+                board2.setMessage( "No more hints available! :p");
             }
         });
 
@@ -255,16 +258,20 @@ public class WordSearch{
             if (board2.checkSubmission()) {
                 numWordsLeft2.decrementAndGet(); 
                 player1Points.addAndGet(5);  
-                JOptionPane.showMessageDialog(null, "Correct!!! +5 points. Words left: " + numWordsLeft2.get());
+                board2.setMessage("Correct!!! +5 points. Words left: " + numWordsLeft2.get());
 
                 if (numWordsLeft2.get() == 0) {
-                    JOptionPane.showMessageDialog(null, "Congrats! You have found all the words \n" + 
+                    board2.setMessage( "Congrats! You have found all the words \n" + 
                         "Final Score: " + player2Points.get());
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "Not a hidden word. Try again!");
+                board2.setMessage( "Not a hidden word. Try again!");
             }
         });
+
+        board2.setVisible(true);
+
+
         if(player1Points.get() > player2Points.get()){
             JOptionPane.showMessageDialog(null, "Congrats " + player1 + " & " + player2 + "! You both did great. Let's get the conclusion: \n" +
             "Player 1 got " + player1Points + " points while Player 2 got " +player2Points+ " points. Therefore PLAYER 1 IS THE WINNERRRRR. \n"+
@@ -283,8 +290,6 @@ public class WordSearch{
         }   
 
     }
-
-
 
     public static boolean isWord(String word){
         //Checks on the dictionary if it is a word

@@ -1,10 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
 import java.util.*;
 import java.util.List;
+import javax.swing.*;
 
 public class Board extends JDialog{
     private String[][] board = new String[15][15];
@@ -18,12 +15,14 @@ public class Board extends JDialog{
     private List<String> hiddenWords = new ArrayList<>();
     private List<WordLocation> wordLocations = new ArrayList<>();
     private List<JButton> selectedButtons = new ArrayList<>();
+    private JTextArea messageArea;
 
     public Board(Frame owner, String theme){
         super(owner, "WordSearch Board", true);
+        setLayout(new BorderLayout());
         setSize(800, 800);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+
 
 
         JLabel themeLabel = new JLabel("Theme: " + theme, SwingConstants.CENTER);
@@ -53,6 +52,7 @@ public class Board extends JDialog{
         submitButton.setEnabled(true);
 
         add(buttonPanel, BorderLayout.EAST); 
+      
 
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
@@ -75,9 +75,19 @@ public class Board extends JDialog{
         add(panel, BorderLayout.CENTER);
         defaultButtonColor = button[0][0].getBackground();
 
-        // submitButton.addActionListener(e -> checkSubmission());
+        submitButton.addActionListener(e -> {
+         System.out.println("Submit clicked");
+            checkSubmission();
+        });
         quitButton.addActionListener(e -> dispose());
-        
+        messageArea = new JTextArea(10,15);
+        messageArea.setEditable(false);
+        messageArea.setLineWrap(true);
+        JScrollPane scrollPane = new JScrollPane(messageArea);
+
+        buttonPanel.add(scrollPane);
+
+        repaint();
     }
 
     public void makeWordSearch(String word1, String word2, String word3, String word4, String word5){
@@ -255,7 +265,6 @@ public class Board extends JDialog{
         System.out.println("Submitted word: " + word);  
 
         if (isWordFound(word)){
-            JOptionPane.showMessageDialog(this, "You already found this word!", "Word Already Found", JOptionPane.INFORMATION_MESSAGE);
             clearSelection();
             return false;
         }
@@ -267,6 +276,7 @@ public class Board extends JDialog{
                 return true;
             }
         }
+
         clearSelection();
         return false;
     }
@@ -357,17 +367,24 @@ public class Board extends JDialog{
             }
         }
 
-        private void quitGame(){
-            int response = JOptionPane.showConfirmDialog(
-                this, "Are you sure you want to quit?", "Confirm Quit", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+        // private void quitGame(){
+        //     int response = JOptionPane.showConfirmDialog(
+        //         this, "Are you sure you want to quit?", "Confirm Quit", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 
-                if(response == JOptionPane.YES_OPTION){
-                    dispose();
-                }
-        }
+        //         if(response == JOptionPane.YES_OPTION){
+        //             dispose();
+        //         }
+        // }
 
         public JButton getQuitButton(){
             return quitButton;
         }
+        public void setMessage(String message) {
+            if (messageArea != null) {
+                messageArea.setText(message);
+            }
+        }
+
+
 
 }
