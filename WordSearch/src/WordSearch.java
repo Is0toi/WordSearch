@@ -12,10 +12,6 @@ public class WordSearch{
         int choice = JOptionPane.showOptionDialog(null, "Welcome to to Word Hunt Showdown! \n Before we get started, would you like to play single player or two player mode?", "Welcome To WordSearch!", JOptionPane.DEFAULT_OPTION,
             JOptionPane.QUESTION_MESSAGE,null,new String[] {"1 Player", "2 Players"}, "1 Player");
 
-
-
-
-        // SINGLE PLAYER --------------------------------------------------------------------------------
         if(choice == 0){
             String player = JOptionPane.showInputDialog(null, "Whats your name?:");
             JOptionPane.showMessageDialog(null, "In single player, the program will generate a wordsaerch for you to solve. \n You will need to find 5 words with this distribution: \n -(2) 4 letter words \n -(3) 5 letter words \n "+
@@ -88,8 +84,6 @@ public class WordSearch{
             
 
         }
-
-        // TWO PLAYER ---------------------------------------------------------------------------
         else{
             JOptionPane.showMessageDialog(null, "Get ready for a two-player competition! \n" + 
             "In this game mode, both players will compete in a battle where they each create custom word searches for the other to solve. \n" +
@@ -97,7 +91,7 @@ public class WordSearch{
             "Player 2 earns 5 points for each theme word they find \n" +
             "Once Player 2 uncovers all the words, or decides to give up, the roles switch!\n"+
             "Do not repeat words and select words that are 3-15 letters. \n"+
-            "At the end, the player with the most points wins the title of WORD HUNT CHAMPIONNNNNN \n" +
+            "At the end, the player with the most points wins the title of WORD HUNT CHAMPIONNNNNN" +
             " Make sure to full screen the board and Good luck! let the battle begin >:D");
 
             String player1 = JOptionPane.showInputDialog(null, "Enter Player 1's name:");
@@ -138,7 +132,7 @@ public class WordSearch{
             }
 
     
-            // BOARD ----------------------------------------------------------------------------------------- 
+            // BOARD -----------------------------------------------------------------------------------------
             Board board1 = new Board(null, player1Theme);
             board1.makeWordSearch(words[0],words[1],words[2],words[3],words[4]);
             board1.fillRandomLetters();
@@ -170,7 +164,7 @@ public class WordSearch{
         });
 
             board1.getSubmitButton().addActionListener(e -> {
-             //Some atmoicInteger I have never experienced this before
+             //Some atmoicInteger ngl I used chatgpt because I have never experienced this before
             if (board1.checkSubmission()) {
                 numWordsLeft.decrementAndGet(); 
                 player2Points.addAndGet(5);  
@@ -186,6 +180,11 @@ public class WordSearch{
         });
         board1.setVisible(true);
         
+
+
+
+
+
 
 
 
@@ -292,9 +291,6 @@ public class WordSearch{
 
     }
 
-
-    // METHODS ------------------------------------------------------------
-
     public static boolean isWord(String word){
         //Checks on the dictionary if it is a word
         try {
@@ -350,5 +346,8 @@ public class WordSearch{
         reader.close();
         return randomWord;
     }
+
+
+
 
 }

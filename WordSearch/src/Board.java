@@ -90,8 +90,6 @@ public class Board extends JDialog{
         repaint();
     }
 
-    // MAKING BOARD ------------------------------------------------------------------------------------------
-
     public void makeWordSearch(String word1, String word2, String word3, String word4, String word5){
         boolean placed1 = false;
         boolean placed2 = false;
@@ -146,7 +144,7 @@ public class Board extends JDialog{
     }
 
 
-    // PLACE WORD LOGIC ------------------------------------------------
+    // PLACE WORD LOGIC------------------------------------------------
 
     public boolean tryHorizontal(String word, int row, int column){
         if(column + word.length() > 15){
@@ -174,7 +172,7 @@ public class Board extends JDialog{
         wordLocations.add(new WordLocation(word, points));
     }
 
-    //VERTICAL ------------------------------------------------
+    //------------------------------------------------
     public boolean tryVertical(String word, int row, int column){
         if(row + word.length() > 15){
             return false;
@@ -200,7 +198,7 @@ public class Board extends JDialog{
         wordLocations.add(new WordLocation(word, points));
     }
 
-    //DIAGONAL------------------------------------------------
+    //------------------------------------------------
 
     public boolean tryDiagonal(String word, int row, int column){
         if(row + word.length() > 15 || column + word.length() > 15){
@@ -227,7 +225,7 @@ public class Board extends JDialog{
         wordLocations.add(new WordLocation(word, points));
     }
 
-    // FILL BOARD------------------------------------------------
+    //------------------------------------------------
 
     public void fillRandomLetters(){
         for(int r = 0; r < 15; r++){
@@ -243,7 +241,7 @@ public class Board extends JDialog{
         }
         refresh();
     }
-    // METHODS ------------------------------------------------
+    //------------------------------------------------
     public JButton getHintButton() {
         return hintButton;
     }
@@ -283,12 +281,11 @@ public class Board extends JDialog{
         return false;
     }
     public void toggleSelection(int r, int c) {
-        // Handles cell selection logic so that you don't go in random directions
             Point p = new Point(r, c);
 
             if (selectedCells.isEmpty()) {
                 selectedCells.add(p);
-                button[r][c].setBackground(Color.GRAY);
+                button[r][c].setBackground(Color.YELLOW);
             } else {
                 Point first = selectedCells.get(0);
                 int dr = r - first.x;
@@ -299,16 +296,16 @@ public class Board extends JDialog{
                 int dirR = Integer.signum(dr);
                 int dirC = Integer.signum(dc);
 
-                // Expected next cell 
+                // Expected next cell
                 Point expectedNext = new Point(first.x + dirR * len, first.y + dirC * len);
 
                 if (expectedNext.equals(p)) {
                     selectedCells.add(p);
-                    button[r][c].setBackground(Color.GREEN);
+                    button[r][c].setBackground(Color.YELLOW);
                 } else {
                     clearSelection();
                     selectedCells.add(p);
-                    button[r][c].setBackground(Color.GREEN);
+                    button[r][c].setBackground(Color.YELLOW);
                 }
             }
 
@@ -346,7 +343,6 @@ public class Board extends JDialog{
         }
 
         private void highlightFoundWord(String word) {
-            // Changes background of found words
             for (WordLocation wl : wordLocations) {
                 if (wl.word.equals(word)) {
                     for (Point p : wl.locations) {
@@ -371,6 +367,14 @@ public class Board extends JDialog{
             }
         }
 
+        // private void quitGame(){
+        //     int response = JOptionPane.showConfirmDialog(
+        //         this, "Are you sure you want to quit?", "Confirm Quit", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+
+        //         if(response == JOptionPane.YES_OPTION){
+        //             dispose();
+        //         }
+        // }
 
         public JButton getQuitButton(){
             return quitButton;
@@ -380,5 +384,7 @@ public class Board extends JDialog{
                 messageArea.setText(message);
             }
         }
+
+
 
 }
