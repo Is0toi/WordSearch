@@ -11,21 +11,12 @@ public class Board extends JFrame{
     private JButton[][] button = new JButton[15][15];
     private JButton hintButton;
     private JButton submitButton;
+    private JButton quitButton;
     private List<Point> selectedCells = new ArrayList<>();
     private Color defaultButtonColor;
     private List<String> foundWords = new ArrayList<>();
     private List<String> hiddenWords = new ArrayList<>();
     private List<WordLocation> wordLocations = new ArrayList<>();
-
-    public class WordLocation{
-        String word;
-        List<Point> locations;
-
-        public WordLocation(String word, List<Point> locations){
-            this.word = word;
-            this.locations = locations;
-        }
-    }
 
     public Board(String theme){
         setTitle("WordSearch Board");
@@ -50,8 +41,10 @@ public class Board extends JFrame{
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         hintButton = new JButton("Hint");
         submitButton = new JButton("Submit");
+        quitButton = new JButton("Quit");
         buttonPanel.add(hintButton);
         buttonPanel.add(submitButton);
+        buttonPanel.add(quitButton);
         add(buttonPanel, BorderLayout.EAST); 
 
         for (int r = 0; r < 15; r++) {
@@ -75,6 +68,8 @@ public class Board extends JFrame{
         add(panel, BorderLayout.CENTER);
         defaultButtonColor = button[0][0].getBackground();
         setVisible(true);
+
+        quitButton.addActionListener(e -> quitGame());
     }
 
     public void makeWordSearch(String word1, String word2, String word3, String word4, String word5){
@@ -319,7 +314,6 @@ public class Board extends JFrame{
         }
 
         private void highlightFoundWord(String word) {
-            System.out.println("Highlighting word: " + word); 
             for (WordLocation wl : wordLocations) {
                 if (wl.word.equals(word)) {
                     for (Point p : wl.locations) {
@@ -333,4 +327,28 @@ public class Board extends JFrame{
             }
             repaint();
         }
+
+        public class WordLocation{
+            String word;
+            List<Point> locations;
+
+            public WordLocation(String word, List<Point> locations){
+                this.word = word;
+                this.locations = locations;
+            }
+        }
+
+        private void quitGame(){
+            int response = JOptionPane.showConfirmDialog(
+                this, "Are you sure you want to quit?", "Confirm Quit", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
+
+                if(response == JOptionPane.YES_OPTION){
+                    System.exit(0);
+                }
+        }
+
+        public JButton getQuitButton(){
+            return quitButton;
+        }
+
 }
