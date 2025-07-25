@@ -17,6 +17,7 @@ public class Board extends JFrame{
     private List<String> foundWords = new ArrayList<>();
     private List<String> hiddenWords = new ArrayList<>();
     private List<WordLocation> wordLocations = new ArrayList<>();
+    private List<JButton> selectedButtons = new ArrayList<>();
 
     public Board(String theme){
         setTitle("WordSearch Board");
@@ -296,6 +297,13 @@ public class Board extends JFrame{
             selectedCells.clear();
         }
 
+        public void confirmSelection(){
+            for(JButton b : selectedButtons){
+                b.setBackground(Color.GREEN);
+            }
+            selectedButtons.clear();
+        }
+
         public void refresh(){
             for(int r = 0; r < 15; r++){
                 for(int c = 0; c < 15; c++){
@@ -318,7 +326,7 @@ public class Board extends JFrame{
                 if (wl.word.equals(word)) {
                     for (Point p : wl.locations) {
                         JButton highlightButton = button[p.x][p.y];
-                        highlightButton.setBackground(Color.GREEN);
+                        highlightButton.setBackground(Color.BLUE);
                         highlightButton.setOpaque(true);
                         highlightButton.repaint();
                     }

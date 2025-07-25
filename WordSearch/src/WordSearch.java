@@ -138,13 +138,13 @@ public class WordSearch{
         });
 
             board1.getSubmitButton().addActionListener(e -> {
-                //Some atmoicInteger ngl I used chatgpt because I have never experienced this before
+             //Some atmoicInteger ngl I used chatgpt because I have never experienced this before
             if (board1.checkSubmission()) {
                 numWordsLeft.decrementAndGet(); 
-                player2Points.addAndGet(5);    // Fixed addition
+                player2Points.addAndGet(5);  
                 JOptionPane.showMessageDialog(null, "Correct!!! +5 points. Words left: " + numWordsLeft.get());
 
-                if (numWordsLeft.get() == 0) { // Fixed comparison
+                if (numWordsLeft.get() == 0) {
                     JOptionPane.showMessageDialog(null, "Congrats! You have found all the words \n" + 
                         "Final Score: " + player2Points.get());
                 }
@@ -152,10 +152,111 @@ public class WordSearch{
                 JOptionPane.showMessageDialog(null, "Not a hidden word. Try again!");
             }
         });
+        
+
+
+
+
+
+
+
+
+        // PLAYER 2 TURN ------------------------------------------------------------------------------------------------------------------------------------------
+        String player2Theme = JOptionPane.showInputDialog(null,"Okay " + player2 + ", are you ready? Enter a theme for you word search (Please be specific and make sure player 2 doesn't see):");
+
+            final String[] words2 = new String[5];
+            Set<String> usedWords2 = new HashSet<>();
+            for (int i = 0; i < 5; i++) {
+                while (true) {
+                    String input = JOptionPane.showInputDialog(null, "Word " + (i+1) + ":");
+                    if (input == null) System.exit(0); 
+                    
+                    input = input.trim().toUpperCase();
+                    
+                    if (input.length() < 3 || input.length() > 15) {
+                        JOptionPane.showMessageDialog(null, 
+                            "Word must be between 3 - 15 letters. Try again.");
+                        continue;
+                    }
+
+                    if (usedWords2.contains(input)){
+                        JOptionPane.showMessageDialog(null, input + " was already entered. Try again.");
+                        continue;
+                    }
+                    
+                    if (!isWord(input)) {
+                        JOptionPane.showMessageDialog(null, 
+                            "\"" + input + "\" is not a valid dictionary word. Try again.");
+                        continue;
+                    }
+                    
+                    words2[i] = input;
+                    usedWords2.add(input);
+                    break;
+                }
+            }
+
+            // BOARD --------------------------------------------------------------------------------
+            Board board2 = new Board(player2Theme);
+            board1.makeWordSearch(words2[0],words2[1],words2[2],words2[3],words2[4]);
+            board1.fillRandomLetters();
+            board1.setVisible(true);
+
+            // LOGIC ON BOARD ---------------------------------------------------------------------
+
+            AtomicInteger numWordsLeft2 = new AtomicInteger(5);
+            AtomicInteger player1Points = new AtomicInteger(0);
+            AtomicInteger hintsUsedNum1 = new AtomicInteger(0);
+
+            // JButton hintButton = board1.getHintButton();
+            board1.getHintButton().addActionListener(e -> {
+            if (hintsUsedNum1.get() < 3) {
+                hintsUsedNum1.incrementAndGet();
+                player1Points.addAndGet(-3);
+                JOptionPane.showMessageDialog(null, 
+                    "Hint #" + hintsUsedNum1.get() + ":\n" +
+                    hintSubstring(hintsUsedNum1.get(), words2[0]) + "\n" +
+                    hintSubstring(hintsUsedNum1.get(), words2[1]) + "\n" +
+                    hintSubstring(hintsUsedNum1.get(), words2[2]) + "\n" +
+                    hintSubstring(hintsUsedNum1.get(), words2[3]) + "\n" +
+                    hintSubstring(hintsUsedNum1.get(), words2[4]) +
+                    "\n\nPoints deducted: 3");
+            } else {
+                JOptionPane.showMessageDialog(null, "No more hints available! :p");
+            }
+        });
+
+            board1.getSubmitButton().addActionListener(e -> {
+             //Some atmoicInteger ngl I used chatgpt because I have never experienced this before
+            if (board1.checkSubmission()) {
+                numWordsLeft2.decrementAndGet(); 
+                player1Points.addAndGet(5);  
+                JOptionPane.showMessageDialog(null, "Correct!!! +5 points. Words left: " + numWordsLeft2.get());
+
+                if (numWordsLeft2.get() == 0) {
+                    JOptionPane.showMessageDialog(null, "Congrats! You have found all the words \n" + 
+                        "Final Score: " + player2Points.get());
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Not a hidden word. Try again!");
+            }
+        });
+        if(player1Points.get() > player2Points.get()){
+            JOptionPane.showMessageDialog(null, "Congrats " + player1 + " & " + player2 + "! You both did great. Let's get the conclusion: \n" +
+            "Player 1 got " + player1Points + " points while Player 2 got " +player2Points+ " points. Therefore PLAYER 1 IS THE WINNERRRRR. \n"+
+            "I hope you two come back and play again especially " + player2 + " for revenge >:)");
         }
-
-
-
+        else if(player1Points.get() < player2Points.get()){
+            JOptionPane.showMessageDialog(null, "Congrats " + player1 + " & " + player2 + "! You both did great. Let's get the conclusion: \n" +
+            "Player 1 got " + player1Points + " points while Player 2 got " +player2Points+ " points. Therefore PLAYER 2 IS THE WINNERRRRR. \n"+
+            "I hope you two come back and play again especially " + player1 + " for revenge >:)");
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Congrats " + player1 + " & " + player2 + "! You both did great. Let's get the conclusion: \n" +
+            "You guys both got the same amount of points of " + player1Points 
+            + "\n I hope you two come back and play again to find a definite WINNERRRRR");
+        }
+        }   
 
     }
 
@@ -193,7 +294,7 @@ public class WordSearch{
     }
     public static String hintSubstring(int numTimes, String word) {
          return word.substring(0, numTimes);
-     }
+    }
 
 
 
