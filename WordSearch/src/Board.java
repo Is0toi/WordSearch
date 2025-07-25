@@ -27,11 +27,15 @@ public class Board extends JFrame{
         }
     }
 
-    public Board(){
+    public Board(String theme){
         setTitle("WordSearch Board");
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+
+        JLabel themeLabel = new JLabel("Theme: " + theme, SwingConstants.CENTER);
+        add(themeLabel, BorderLayout.NORTH);
 
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
@@ -53,6 +57,10 @@ public class Board extends JFrame{
         for (int r = 0; r < 15; r++) {
             for (int c = 0; c < 15; c++) {
                 button[r][c] = new JButton(board[r][c]);
+                button[r][c].setOpaque(true);
+                button[r][c].setContentAreaFilled(true);
+                button[r][c].setBorderPainted(false);
+
                 panel.add(button[r][c]);
                 final int row = r;
                 final int col = c;
@@ -241,10 +249,15 @@ public class Board extends JFrame{
         String word = selectedWord.toString();
         String reverseWord = new StringBuilder(word).reverse().toString();
 
+        if (isWordFound(word)){
+            JOptionPane.showMessageDialog(this, "You already found this word!", "Word Already Found", JOptionPane.INFORMATION_MESSAGE);
+            clearSelection();
+            return false;
+        }
         for(String hidden: hiddenWords){
             if(!isWordFound(hidden)&& (word.equals(hidden) || reverseWord.equals(hidden))){
                 foundWords.add(hidden);
-                highlightFoundWord(hidden);
+                highlightFoundWord(hidden); // Should highlight the actuall word location
                 clearSelection();
                 return true;
             }
@@ -257,7 +270,7 @@ public class Board extends JFrame{
             
             if (selectedCells.isEmpty()) {
                 selectedCells.add(p);
-                button[r][c].setBackground(Color.YELLOW);
+                button[r][c].setBackground(Color.BLUE);
             } else {
                 Point last = selectedCells.get(selectedCells.size() - 1);
                 int dr = r - last.x;
@@ -306,14 +319,18 @@ public class Board extends JFrame{
         }
 
         private void highlightFoundWord(String word) {
+            System.out.println("Highlighting word: " + word); 
             for (WordLocation wl : wordLocations) {
                 if (wl.word.equals(word)) {
                     for (Point p : wl.locations) {
-                        button[p.x][p.y].setBackground(Color.GREEN);
+                        JButton highlightButton = button[p.x][p.y];
+                        highlightButton.setBackground(Color.GREEN);
+                        highlightButton.setOpaque(true);
+                        highlightButton.repaint();
                     }
                     break;
                 }
             }
+            repaint();
         }
-        
 }

@@ -5,6 +5,8 @@ import java.net.*;
 import java.util.Random;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WordSearch{
     public static void main (String[] args){
@@ -20,28 +22,34 @@ public class WordSearch{
             JOptionPane.showMessageDialog(null, "Get ready for a two-player competition! \n" + 
             "In this game mode, both players will compete in a battle where they each create custom word searches for the other to solve. \n" +
             "Player 1 starts by choosing a theme and providing 5 words related to it. \n" +
-            "Player 2 earns 5 points for each theme word they find and 2 bonus points for discovering words valid on the grid. \n" +
-            "One Player 2 uncovers all the words, or decides to give up, the roles switch!\n"+
+            "Player 2 earns 5 points for each theme word they find \n" +
+            "Once Player 2 uncovers all the words, or decides to give up, the roles switch!\n"+
+            "Do not repeat words and select words that are 3-15 letters. \n"+
             "At the end, the player with the most points wins the title of WORD HUNT CHAMPIONNNNNN" +
-            " Good luck and let the battle begin >:D");
+            " Make sure to full screen the board and Good luck! let the battle begin >:D");
 
             String player1 = JOptionPane.showInputDialog(null, "Enter Player 1's name:");
             String player2 = JOptionPane.showInputDialog(null,"Enter Player 2's name:");
 
             String player1Theme = JOptionPane.showInputDialog(null,"Okay " + player1 + ", are you ready? Enter a theme for you word search (Please be specific and make sure player 2 doesn't see):");
 
-
             final String[] words = new String[5];
+            Set<String> usedWords = new HashSet<>();
             for (int i = 0; i < 5; i++) {
                 while (true) {
                     String input = JOptionPane.showInputDialog(null, "Word " + (i+1) + ":");
-                    if (input == null) System.exit(0); // Exit if user cancels
+                    if (input == null) System.exit(0); 
                     
                     input = input.trim().toUpperCase();
                     
                     if (input.length() < 3 || input.length() > 15) {
                         JOptionPane.showMessageDialog(null, 
                             "Word must be between 3 - 15 letters. Try again.");
+                        continue;
+                    }
+
+                    if (usedWords.contains(input)){
+                        JOptionPane.showMessageDialog(null, input + " was already entered. Try again.");
                         continue;
                     }
                     
@@ -52,9 +60,11 @@ public class WordSearch{
                     }
                     
                     words[i] = input;
+                    usedWords.add(input);
                     break;
                 }
             }
+
             // JOptionPane.showMessageDialog(null, "Excellent choice! Now, enter 5 words (between 3-15 characters) you'd like for the program to scramble.", "Okay!", JOptionPane.INFORMATION_MESSAGE);
 
             // String player1word1 = JOptionPane.showInputDialog(null, "Word 1:");
@@ -93,7 +103,7 @@ public class WordSearch{
             // JOptionPane.showMessageDialog(null,"Aaaaand we're back! " + player2 + ", are you ready to find the words with the theme: " + player1Theme +". Good luck!", "Okay!", JOptionPane.INFORMATION_MESSAGE);
 
             // BOARD --------------------------------------------------------------------------------
-            Board board1 = new Board();
+            Board board1 = new Board(player1Theme);
             board1.makeWordSearch(words[0],words[1],words[2],words[3],words[4]);
             board1.fillRandomLetters();
             board1.setVisible(true);
