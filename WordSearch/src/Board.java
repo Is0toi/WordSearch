@@ -1,18 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
-import java.util.ArrayList;
 
 public class Board extends JFrame{
     private String[][] board = new String[15][15];
     private JButton[][] button = new JButton[15][15];
     private JButton hintButton;
-    private JButton submitButton;
-    private List<JButton> selectedButtons = new ArrayList<>();
-
 
     public Board(){
+
         setTitle("WordSearch Board");
+        setSize(800,800);
         setSize(800, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -24,38 +21,30 @@ public class Board extends JFrame{
             }
         }
 
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(15,15));
         // Create hint button panel on the right side
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         hintButton = new JButton("Hint");
         buttonPanel.add(hintButton);
-
-        submitButton = new JButton("Submit Word");
-        buttonPanel.add(submitButton);  
         add(buttonPanel, BorderLayout.EAST); 
-        //how to make it near the hint button
 
-        // Create grid panel for wordsearch
-        JPanel panel = new JPanel(new GridLayout(15, 15));
-        for (int r = 0; r < 15; r++) {
-            for (int c = 0; c < 15; c++) {
-                JButton b = new JButton(board[r][c]);
-                button[r][c] = b;
-                int finalR = r;
-                int finalC = c;
-                b.addActionListener(e->{
-                    if(!selectedButtons.contains(b)){
-                        selectedButtons.add(b);
-                        b.setBackground(Color.BLUE);
-                    }
-                    else{
-                        selectedButtons.remove(b);
-                        b.setBackground(null);
-                    }
-                });
-                panel.add(b);
+        for(int r= 0; r < 15; r++){
+            for(int c = 0; c < 15; c++){
+                button[r][c] = new JButton(board[r][c]); //Button of the letters
             }
         }
+        // Create grid panel for wordsearch
+        JPanel panel = new JPanel(new GridLayout(15, 15));
+
+        for (int r = 0; r < 15; r++) {
+            for (int c = 0; c < 15; c++) {
+                button[r][c] = new JButton(board[r][c]);
+                panel.add(button[r][c]);
+            }
+        }
+        add(panel);
         add(panel, BorderLayout.CENTER);  
 
         setVisible(true);
@@ -203,33 +192,14 @@ public class Board extends JFrame{
                     board[r][c] =String.valueOf(randomChar);
                     button[r][c].setText(String.valueOf(randomChar));
                 }
-                
+
             }
-            
+
         }
         refresh();
     }
     public JButton getHintButton() {
         return hintButton;
     }
-
-    public String getSelectedWord(){
-        StringBuilder sb = new StringBuilder();
-        for(JButton b : selectedButtons){
-            sb.append(b.getText());
-        }
-        return sb.toString();
-    }
-    public void clearSelection() {
-        for(JButton b : selectedButtons){
-            b.setBackground(null);
-        }
-        selectedButtons.clear();
-    }
-
-    public JButton getSubmitButton(){
-        return submitButton;
-    }
-
 
 }
