@@ -1,6 +1,6 @@
 # WordSearch
 
-WordSearch is a Java-based GUI word puzzle game designed to run on macOS, Windows, and Linux. The app is packaged as a standalone `.jar` file, which requires Java 8 or higher to run.
+WordSearch is a Java-based GUI word puzzle game designed to run on macOS, Windows, and Linux. The app is packaged as a standalone `.jar` file, which requires Java 24 to run.
 
 ---
 
