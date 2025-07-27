@@ -16,7 +16,7 @@ Download the latest version of WordSearch here:
 
 ### Prerequisites
 
-Make sure you have Java 8 (or later) installed on your computer.  
+Make sure you have Java 24 installed on your computer.  
 You can download Java from [https://java.com](https://java.com).
 
 ### Running the app
